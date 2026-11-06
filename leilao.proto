@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package leilao;
+
+service ServicoLeilao {
+  rpc ConsultarLeilao (ConsultaRequest) returns (EstadoLeilao);
+  rpc DarLance (LanceRequest) returns (LanceResponse);
+  rpc AcompanharLeilao (AcompanharRequest) returns (stream NotificacaoLeilao);
+}
+
+message ConsultaRequest {}
+
+message AcompanharRequest {
+  string id_participante = 1;
+}
+
+message EstadoLeilao {
+  string descricao = 1;
+  double maior_lance = 2;
+  string vencedor_atual = 3;
+  int64 tempo_restante_segundos = 4;
+  bool encerrado = 5;
+}
+
+message LanceRequest {
+  string id_participante = 1;
+  double valor = 2;
+}
+
+message LanceResponse {
+  bool aceito = 1;
+  string mensagem = 2;
+  double maior_lance_atual = 3;
+}
+
+enum TipoNotificacao {
+  NOVO_MAIOR_LANCE = 0;
+  LEILAO_ENCERRADO = 1;
+}
+
+message NotificacaoLeilao {
+  TipoNotificacao tipo = 1;
+  double valor = 2;
+  string participante = 3;
+  string mensagem = 4;
+}
